@@ -1,10 +1,31 @@
-async function saveConfig() {
-    const guildId = document.getElementById('guildId').value;
-    const testMessage = document.getElementById('testMessage').value;
-    const statusEl = document.getElementById('status');
+function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+        guild_id: params.get('guild_id'),
+        token: params.get('token')
+    };
+}
 
-    if (!guildId || !testMessage) {
-        statusEl.textContent = '❌ Töltsd ki mindkét mezőt!';
+function showStatus(message, type = 'info') {
+    const statusEl = document.getElementById('status');
+    statusEl.textContent = message;
+    statusEl.className = `status show ${type}`;
+}
+
+async function saveConfig() {
+    const testMessage = document.getElementById('testMessage').value;
+    const {
+        guild_id,
+        token
+    } = getUrlParams();
+
+    if (!testMessage.trim()) {
+        showStatus('Töltsd ki az üzenet mezőt!', 'error');
+        return;
+    }
+
+    if (!token) {
+        showStatus('Token hiányzik! Használd a Discord parancsot!', 'error');
         return;
     }
 
@@ -15,41 +36,64 @@ async function saveConfig() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                guild_id: guildId,
+                guild_id: parseInt(guild_id),
+                token: token,
                 test_message: testMessage
             })
         });
 
+        const data = await response.json();
+
         if (response.ok) {
-            statusEl.textContent = '✅ Sikeresen mentve!';
+            showStatus('Sikeresen mentve!', 'success');
         } else {
-            statusEl.textContent = '❌ Hiba a mentés során!';
+            showStatus(`Hiba: ${data.error || 'Ismeretlen hiba'}`, 'error');
         }
     } catch (error) {
-        statusEl.textContent = '❌ Hiba: ' + error.message;
+        showStatus(`Hiba: ${error.message}`, 'error');
     }
 }
 
 async function loadConfig() {
-    const guildId = document.getElementById('guildId').value;
-    const statusEl = document.getElementById('status');
+    const {
+        guild_id,
+        token
+    } = getUrlParams();
 
-    if (!guildId) {
-        statusEl.textContent = '❌ Add meg a Guild ID-t!';
+    if (!token) {
+        showStatus('Token hiányzik! Használd a Discord parancsot!', 'error');
         return;
     }
 
     try {
-        const response = await fetch(`/api/config/${guildId}`);
+        const response = await fetch(`/api/config/${guild_id}?token=${token}`);
         const data = await response.json();
 
-        if (data.test_message) {
+        if (response.ok && data.test_message) {
             document.getElementById('testMessage').value = data.test_message;
-            statusEl.textContent = '✅ Betöltve!';
+            showStatus('Betöltve!', 'success');
         } else {
-            statusEl.textContent = '❌ Nincs adat erre a Guild ID-ra!';
+            showStatus(`${data.error || 'Nincs adat erre a szerverhez!'}`, 'error');
         }
     } catch (error) {
-        statusEl.textContent = '❌ Hiba: ' + error.message;
+        showStatus(`Hiba: ${error.message}`, 'error');
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const {
+        guild_id,
+        token
+    } = getUrlParams();
+    const guildInfoEl = document.getElementById('guildInfo');
+    const guildIdDisplay = document.getElementById('guildIdDisplay');
+
+    if (!guild_id || !token) {
+        showStatus('Hiányzó guild_id vagy token az URL-ből!', 'error');
+        document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+    } else {
+        guildInfoEl.style.display = 'block';
+        guildIdDisplay.textContent = guild_id;
+        showStatus('Bejelentkezve. Kész a konfigurálásra.', 'success');
+    }
+});

@@ -3,26 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Discord Guild Config</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1>Discord Guild Konfigurálás</h1>
-    
-    <div>
-        <label>Guild ID:</label>
-        <input type="text" id="guildId" placeholder="Írd be a Guild ID-t">
+    <div class="container">
+        <div class="header">
+            <h1>Guild Config</h1>
+            <p>Szerver beállítások</p>
+        </div>
+
+        <div id="guildInfo" class="guild-info">
+            Guild ID: <strong id="guildIdDisplay"></strong>
+        </div>
+
+        <div class="form-group">
+            <label for="testMessage">Teszt Üzenet</label>
+            <textarea 
+                id="testMessage" 
+                placeholder="Írd be az üzenetet amit a bot küldeni fog..."
+                rows="6"
+            ></textarea>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-save" onclick="saveConfig()">Mentés</button>
+            <button class="btn-load" onclick="loadConfig()">Betöltés</button>
+        </div>
+
+        <div id="status" class="status"></div>
     </div>
     
-    <div>
-        <label>Test Message:</label>
-        <textarea id="testMessage" placeholder="Írd be a teszt üzenetet" rows="5" cols="50"></textarea>
-    </div>
-    
-    <button onclick="saveConfig()">Mentés</button>
-    <button onclick="loadConfig()">Betöltés</button>
-    
-    <p id="status"></p>
-    
-    <script src="script.js"></script>
+    <script src="/static/script.js"></script>
 </body>
 </html>

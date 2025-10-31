@@ -47,9 +47,7 @@ function displayUserInfo() {
                 ${currentUser.discriminator !== '0' ? `<span class="user-tag">#${currentUser.discriminator}</span>` : ''}
             </div>
             <button class="btn-logout" onclick="logout()" title="Kijelentkezés">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke-width="2" stroke-linecap="round"/>
-                </svg>
+                <i class="fas fa-sign-out-alt"></i>
             </button>
         </div>
     `;
@@ -57,20 +55,45 @@ function displayUserInfo() {
 
 async function loadGuilds() {
     try {
+        console.log('🔄 Guilds betöltése...');
+        
         const response = await fetch('/api/guilds', {
             credentials: 'include'
         });
         
         const data = await response.json();
         
+        console.log('📦 API Response:', data);
+        
         if (data.success) {
-            guilds = data.guilds;
+            console.log('📊 Összes guild az API-tól:', data.guilds.length);
+            console.log('📋 Guilds lista:', data.guilds);
+            
+            guilds = data.guilds.filter(guild => {
+                const hasAdminPermission = (guild.permissions & 0x8) === 0x8;
+                const botInGuild = guild.bot_in_guild === true;
+                const result = (hasAdminPermission || guild.owner) && botInGuild;
+                
+                console.log(`🔐 "${guild.name}":`, {
+                    permissions: guild.permissions,
+                    permissionsBinary: guild.permissions ? guild.permissions.toString(2).padStart(16, '0') : 'undefined',
+                    hasAdmin: hasAdminPermission,
+                    isOwner: guild.owner,
+                    botInGuild: botInGuild,
+                    passes: result
+                });
+                
+                return result;
+            });
+            
+            console.log('✅ Szűrés után:', guilds.length, 'guild');
             displayGuilds();
         } else {
+            console.error('❌ API hiba:', data.error);
             showStatus('Hiba a szerverek betöltése során', 'error');
         }
     } catch (error) {
-        console.error('Guilds betöltési hiba:', error);
+        console.error('❌ Guilds betöltési hiba:', error);
         showStatus('Hiba a szerverek betöltése során', 'error');
     }
 }
@@ -82,7 +105,7 @@ function displayGuilds() {
         guildsListEl.innerHTML = `
             <div class="no-guilds">
                 <p>Nincs kezelhető szerver</p>
-                <small>Győződj meg róla, hogy van "Manage Server" jogosultságod</small>
+                <small>Győződj meg róla, hogy van "Administrator" jogosultságod a szerveren</small>
             </div>
         `;
         return;
@@ -91,16 +114,16 @@ function displayGuilds() {
     guildsListEl.innerHTML = guilds.map(guild => {
         const iconUrl = guild.icon 
             ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
-            : '/static/default-guild.png';
+            : '/static/images/default-guild.png';
         
         return `
             <div class="guild-item ${currentGuildId === guild.id ? 'active' : ''}" 
                  onclick="selectGuild('${guild.id}', '${escapeHtml(guild.name)}', '${iconUrl}', ${guild.owner})">
                 <img src="${iconUrl}" alt="${escapeHtml(guild.name)}" class="guild-icon" 
-                     onerror="this.src='/static/default-guild.png'">
+                     onerror="this.src='/static/images/default-guild.png'">
                 <div class="guild-details">
                     <span class="guild-name">${escapeHtml(guild.name)}</span>
-                    ${guild.owner ? '<span class="owner-badge">👑 Owner</span>' : ''}
+                    ${guild.owner ? '<span class="owner-badge"><i class="fas fa-crown"></i> Owner</span>' : ''}
                 </div>
             </div>
         `;
@@ -122,7 +145,7 @@ function selectGuild(guildId, guildName, iconUrl, isOwner) {
     document.getElementById('selectedGuildId').textContent = guildId;
     document.getElementById('selectedGuildIcon').src = iconUrl;
     document.getElementById('selectedGuildIcon').onerror = function() {
-        this.src = '/static/default-guild.png';
+        this.src = '/static/images/default-guild.png';
     };
     
     loadConfig();

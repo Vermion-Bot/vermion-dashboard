@@ -54,17 +54,13 @@ function displayUserInfo() {
 }
 
 async function loadGuilds() {
-    try {
-        console.log('🔄 Guilds betöltése...');
-        
+    try {        
         const response = await fetch('/api/guilds', {
             credentials: 'include'
         });
         
         const data = await response.json();
-        
-        console.log('📦 API Response:', data);
-        
+                
         if (data.success) {
             console.log('📊 Összes guild az API-tól:', data.guilds.length);
             console.log('📋 Guilds lista:', data.guilds);
@@ -74,19 +70,9 @@ async function loadGuilds() {
                 const botInGuild = guild.bot_in_guild === true;
                 const result = (hasAdminPermission || guild.owner) && botInGuild;
                 
-                console.log(`🔐 "${guild.name}":`, {
-                    permissions: guild.permissions,
-                    permissionsBinary: guild.permissions ? guild.permissions.toString(2).padStart(16, '0') : 'undefined',
-                    hasAdmin: hasAdminPermission,
-                    isOwner: guild.owner,
-                    botInGuild: botInGuild,
-                    passes: result
-                });
-                
                 return result;
             });
             
-            console.log('✅ Szűrés után:', guilds.length, 'guild');
             displayGuilds();
         } else {
             console.error('❌ API hiba:', data.error);

@@ -32,7 +32,6 @@ body {
     flex-direction: column;
 }
 
-/* Header */
 .header {
     background: var(--discord-card);
     border-bottom: 1px solid var(--discord-border);
@@ -124,14 +123,12 @@ body {
     color: white;
 }
 
-/* Main Content */
 .main-content {
     display: flex;
     flex: 1;
     overflow: hidden;
 }
 
-/* Sidebar */
 .sidebar {
     width: 280px;
     background: var(--discord-card);
@@ -242,7 +239,6 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* Config Panel */
 .config-panel {
     flex: 1;
     overflow-y: auto;

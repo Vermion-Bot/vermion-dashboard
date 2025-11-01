@@ -259,6 +259,20 @@
         </main>
     </div>
 
-    <script src="/static/script.js"></script>
+    <script src="/static/js/utils.js"></script>
+    
+    <!-- 2. Independent modules -->
+    <script src="/static/js/navigation.js"></script>
+    <script src="/static/js/auth.js"></script>
+    
+    <!-- 3. Modules that depend on utils -->
+    <script src="/static/js/guilds.js"></script>
+    <script src="/static/js/config.js"></script>
+    <script src="/static/js/channels.js"></script>
+    <script src="/static/js/embed-fields.js"></script>
+    <script src="/static/js/embed.js"></script>
+    
+    <!-- 4. Main initialization (depends on everything) -->
+    <script src="/static/js/main.js"></script>
 </body>
 </html>

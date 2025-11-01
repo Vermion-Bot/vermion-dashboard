@@ -150,6 +150,42 @@ body {
     margin-bottom: 12px;
 }
 
+.menu-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 24px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    color: var(--discord-text-muted);
+}
+
+.menu-item:hover {
+    background: var(--discord-hover);
+    border-color: var(--discord-border);
+    color: var(--discord-text);
+}
+
+.menu-item.active {
+    background: var(--discord-accent);
+    border-color: var(--discord-accent-hover);
+    color: white;
+}
+
+.menu-item i {
+    width: 20px;
+    text-align: center;
+}
+
 .guilds-list {
     display: flex;
     flex-direction: column;
@@ -269,12 +305,17 @@ body {
     font-size: 14px;
 }
 
+.section-content {
+    width: 100%;
+}
+
 .config-form {
     max-width: 800px;
     margin: 0 auto;
 }
 
-.config-header {
+.config-header,
+.embed-header {
     margin-bottom: 32px;
     padding-bottom: 24px;
     border-bottom: 1px solid var(--discord-border);
@@ -448,6 +489,372 @@ body {
     border-color: var(--discord-accent);
 }
 
+/* Embed Builder */
+.embed-builder {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.embed-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.embed-editor {
+    background: var(--discord-card);
+    border: 1px solid var(--discord-border);
+    border-radius: 12px;
+    padding: 24px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.embed-preview {
+    position: sticky;
+    top: 24px;
+    background: var(--discord-card);
+    border: 1px solid var(--discord-border);
+    border-radius: 12px;
+    padding: 24px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.preview-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--discord-text);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--discord-border);
+}
+
+.editor-section {
+    margin-bottom: 32px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--discord-text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--discord-text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group textarea,
+.channel-select {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--discord-darker);
+    border: 1px solid var(--discord-border);
+    border-radius: 6px;
+    color: var(--discord-text);
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.channel-select:focus {
+    outline: none;
+    border-color: var(--discord-accent);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.color-input-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.color-input-group input[type="color"] {
+    width: 60px;
+    height: 40px;
+    border: 1px solid var(--discord-border);
+    border-radius: 6px;
+    cursor: pointer;
+    background: var(--discord-darker);
+}
+
+.color-input-group input[type="text"] {
+    flex: 1;
+}
+
+.form-group input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.channel-select {
+    cursor: pointer;
+}
+
+/* Field Editor */
+.field-item {
+    background: var(--discord-darker);
+    border: 1px solid var(--discord-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.field-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.field-number {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--discord-text-muted);
+    text-transform: uppercase;
+}
+
+.btn-remove-field {
+    background: transparent;
+    border: none;
+    color: var(--discord-red);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.btn-remove-field:hover {
+    background: var(--discord-red);
+    color: white;
+}
+
+.field-inline-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.field-inline-group input[type="checkbox"] {
+    margin: 0;
+}
+
+/* Discord Preview */
+.discord-preview {
+    background: var(--discord-darker);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.discord-message {
+    display: flex;
+    gap: 16px;
+}
+
+.discord-avatar {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.discord-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.discord-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.discord-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.discord-username {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--discord-text);
+}
+
+.discord-bot-badge {
+    background: var(--discord-accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.discord-timestamp {
+    font-size: 12px;
+    color: var(--discord-text-muted);
+}
+
+.discord-embed {
+    border-left: 4px solid var(--discord-accent);
+    background: rgba(88, 101, 242, 0.05);
+    border-radius: 4px;
+    padding: 12px 16px 12px 12px;
+    max-width: 520px;
+}
+
+.discord-embed-empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--discord-text-muted);
+}
+
+.discord-embed-empty i {
+    font-size: 32px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.discord-embed-empty p {
+    font-size: 13px;
+}
+
+.embed-author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.embed-author-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.embed-author-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--discord-text);
+}
+
+.embed-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--discord-text);
+    margin-bottom: 8px;
+    word-break: break-word;
+}
+
+.embed-description {
+    font-size: 14px;
+    color: var(--discord-text);
+    line-height: 1.5;
+    margin-bottom: 12px;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.embed-fields {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.embed-field {
+    min-width: 0;
+}
+
+.embed-field.inline {
+    grid-column: span 1;
+}
+
+.embed-field:not(.inline) {
+    grid-column: 1 / -1;
+}
+
+.embed-field-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--discord-text);
+    margin-bottom: 4px;
+    word-break: break-word;
+}
+
+.embed-field-value {
+    font-size: 14px;
+    color: var(--discord-text);
+    line-height: 1.5;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.embed-thumbnail {
+    float: right;
+    margin-left: 16px;
+    margin-bottom: 8px;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 4px;
+}
+
+.embed-image {
+    max-width: 100%;
+    border-radius: 4px;
+    margin: 12px 0;
+}
+
+.embed-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.embed-footer-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.embed-footer-text {
+    font-size: 12px;
+    color: var(--discord-text-muted);
+}
+
 ::-webkit-scrollbar {
     width: 12px;
 }
@@ -465,6 +872,17 @@ body {
     background: var(--discord-hover);
 }
 
+@media (max-width: 1200px) {
+    .embed-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .embed-preview {
+        position: relative;
+        top: 0;
+    }
+}
+
 @media (max-width: 768px) {
     .main-content {
         flex-direction: column;
@@ -478,5 +896,9 @@ body {
     
     .config-panel {
         padding: 20px;
+    }
+    
+    .embed-container {
+        grid-template-columns: 1fr;
     }
 }

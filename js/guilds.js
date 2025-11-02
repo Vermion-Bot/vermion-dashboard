@@ -70,7 +70,8 @@ function selectGuild(guildId, guildName, iconUrl, isOwner) {
     
     const elements = [
         { icon: 'configGuildIcon', name: 'configGuildName', id: 'configGuildId' },
-        { icon: 'embedGuildIcon', name: 'embedGuildName', id: 'embedGuildId' }
+        { icon: 'embedGuildIcon', name: 'embedGuildName', id: 'embedGuildId' },
+        { icon: 'dropdownGuildIcon', name: 'dropdownGuildName', id: 'dropdownGuildId' }
     ];
     
     elements.forEach(el => {
@@ -88,5 +89,8 @@ function selectGuild(guildId, guildName, iconUrl, isOwner) {
     } else if (currentSection === 'embed') {
         document.getElementById('embedSection').style.display = 'block';
         loadChannels();
+    } else if (currentSection === 'list') {
+        document.getElementById('listSection').style.display = 'block';
+        loadChannelsForDropdown();
     }
 }

@@ -855,6 +855,226 @@ body {
     color: var(--discord-text-muted);
 }
 
+/* Dropdown Builder Styles - Add to dashboard.css */
+
+.dropdown-builder {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.dropdown-header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--discord-border);
+}
+
+.dropdown-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.dropdown-editor {
+    background: var(--discord-card);
+    border: 1px solid var(--discord-border);
+    border-radius: 12px;
+    padding: 24px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.dropdown-preview {
+    position: sticky;
+    top: 24px;
+    background: var(--discord-card);
+    border: 1px solid var(--discord-border);
+    border-radius: 12px;
+    padding: 24px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.dropdown-option-item {
+    background: var(--discord-darker);
+    border: 1px solid var(--discord-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.dropdown-option-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.dropdown-option-number {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--discord-text-muted);
+    text-transform: uppercase;
+}
+
+.btn-remove-option {
+    background: transparent;
+    border: none;
+    color: var(--discord-red);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.btn-remove-option:hover {
+    background: var(--discord-red);
+    color: white;
+}
+
+.dropdown-option-default {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.dropdown-option-default input[type="checkbox"] {
+    margin: 0;
+}
+
+/* Discord Dropdown Preview */
+.discord-message-text {
+    color: var(--discord-text);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.discord-dropdown {
+    background: var(--discord-darker);
+    border: 1px solid var(--discord-border);
+    border-radius: 4px;
+    padding: 0;
+    margin-top: 8px;
+}
+
+.dropdown-empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--discord-text-muted);
+}
+
+.dropdown-empty i {
+    font-size: 32px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.dropdown-empty p {
+    font-size: 13px;
+}
+
+.discord-select-menu {
+    background: var(--discord-darker);
+    border: 1px solid var(--discord-border);
+    border-radius: 4px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.discord-select-menu:hover {
+    background: var(--discord-hover);
+    border-color: var(--discord-accent);
+}
+
+.discord-select-placeholder {
+    color: var(--discord-text-muted);
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.discord-select-placeholder i {
+    color: var(--discord-text-muted);
+}
+
+.discord-select-options {
+    background: var(--discord-card);
+    border: 1px solid var(--discord-border);
+    border-radius: 4px;
+    margin-top: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.discord-select-option {
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid var(--discord-border);
+}
+
+.discord-select-option:last-child {
+    border-bottom: none;
+}
+
+.discord-select-option:hover {
+    background: var(--discord-hover);
+}
+
+.discord-select-option.default {
+    background: rgba(88, 101, 242, 0.1);
+}
+
+.discord-option-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--discord-text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.discord-option-emoji {
+    font-size: 16px;
+}
+
+.discord-option-description {
+    font-size: 12px;
+    color: var(--discord-text-muted);
+    margin-top: 2px;
+}
+
+.discord-option-default-badge {
+    font-size: 10px;
+    background: var(--discord-accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: auto;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .dropdown-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .dropdown-preview {
+        position: relative;
+        top: 0;
+    }
+}
+
 ::-webkit-scrollbar {
     width: 12px;
 }

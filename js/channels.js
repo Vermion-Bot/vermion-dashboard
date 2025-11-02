@@ -36,3 +36,42 @@ async function loadChannels() {
         showStatus('Hiba a csatornák betöltése során', 'error', 'embedStatus');
     }
 }
+
+async function loadChannelsForDropdown() {
+    if (!currentGuildId) {
+        showStatus('Nincs kiválasztott szerver', 'error', 'dropdownStatus');
+        return;
+    }
+    
+    const channelSelect = document.getElementById('dropdownChannelSelect');
+    channelSelect.innerHTML = '<option value="">Csatornák betöltése...</option>';
+    
+    try {
+        const response = await fetch(`/api/channels/${currentGuildId}`, {
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            channels = data.channels;
+            
+            if (channels.length === 0) {
+                channelSelect.innerHTML = '<option value="">Nincs elérhető szöveges csatorna</option>';
+                return;
+            }
+            
+            channelSelect.innerHTML = '<option value="">Válassz csatornát...</option>' +
+                channels.map(channel => 
+                    `<option value="${channel.id}"># ${escapeHtml(channel.name)}</option>`
+                ).join('');
+        } else {
+            channelSelect.innerHTML = '<option value="">Hiba a csatornák betöltésénél</option>';
+            showStatus(data.error || 'Hiba a csatornák betöltése során', 'error', 'dropdownStatus');
+        }
+    } catch (error) {
+        console.error('Channels betöltési hiba:', error);
+        channelSelect.innerHTML = '<option value="">Hiba a csatornák betöltésénél</option>';
+        showStatus('Hiba a csatornák betöltése során', 'error', 'dropdownStatus');
+    }
+}

@@ -8,11 +8,14 @@ function showSection(section) {
     
     document.getElementById('configSection').style.display = 'none';
     document.getElementById('embedSection').style.display = 'none';
+    document.getElementById('listSection').style.display = 'none';
     
     if (!currentGuildId) {
         document.getElementById('noGuildSelected').style.display = 'flex';
         return;
     }
+    
+    document.getElementById('noGuildSelected').style.display = 'none';
     
     if (section === 'config') {
         document.getElementById('configSection').style.display = 'block';
@@ -20,5 +23,8 @@ function showSection(section) {
     } else if (section === 'embed') {
         document.getElementById('embedSection').style.display = 'block';
         loadChannels();
+    } else if (section === 'list') {
+        document.getElementById('listSection').style.display = 'block';
+        loadChannelsForDropdown();
     }
 }

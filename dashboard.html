@@ -1,386 +1,736 @@
 <!DOCTYPE html>
 <html lang="hu">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vermion Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/dashboard.css">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/static/dashboard.css" />
+  </head>
+  <body>
     <div class="app-container">
-        <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fab fa-discord" style="font-size: 32px;"></i>
-                    <span>Vermion Dashboard</span>
-                </div>
-                
-                <div class="user-info" id="userInfo">
-                    <div class="user-loading">Betöltés...</div>
-                </div>
+      <header class="header">
+        <div class="header-content">
+          <div class="logo">
+            <i class="fab fa-discord" style="font-size: 32px"></i>
+            <span>Vermion Dashboard</span>
+          </div>
+
+          <div class="user-info" id="userInfo">
+            <div class="user-loading">Betöltés...</div>
+          </div>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <aside class="sidebar">
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">Menü</h3>
+            <div class="menu-items">
+              <div class="menu-item active" onclick="showSection('config')">
+                <i class="fas fa-cog"></i>
+                <span>Konfiguráció</span>
+              </div>
+              <div class="menu-item" onclick="showSection('embed')">
+                <i class="fas fa-envelope"></i>
+                <span>Embed Küldő</span>
+              </div>
+              <div class="menu-item" onclick="showSection('list')">
+                <i class="fa-solid fa-list"></i>
+                <span>Lista küldő</span>
+              </div>
             </div>
-        </header>
+          </div>
 
-        <main class="main-content">
-            <aside class="sidebar">
-                <div class="sidebar-section">
-                    <h3 class="sidebar-title">Menü</h3>
-                    <div class="menu-items">
-                        <div class="menu-item active" onclick="showSection('config')">
-                            <i class="fas fa-cog"></i>
-                            <span>Konfiguráció</span>
-                        </div>
-                        <div class="menu-item" onclick="showSection('embed')">
-                            <i class="fas fa-envelope"></i>
-                            <span>Embed Küldő</span>
-                        </div>
-                        <div class="menu-item" onclick="showSection('list')">
-                            <i class="fa-solid fa-list"></i>
-                            <span>Lista küldő</span>
-                        </div>
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">Szerverek</h3>
+            <div id="guildsList" class="guilds-list">
+              <div class="loading-spinner"></div>
+            </div>
+          </div>
+        </aside>
+
+        <section class="config-panel">
+          <div id="noGuildSelected" class="no-selection">
+            <i class="fas fa-layer-group" style="font-size: 64px"></i>
+            <h2>Válassz szervert</h2>
+            <p>
+              Válaszd ki a konfigurálni kívánt szervert a bal oldali listából
+            </p>
+          </div>
+
+          <div id="configSection" class="section-content" style="display: none">
+            <div class="config-form">
+              <div class="config-header">
+                <div class="guild-info-header">
+                  <img
+                    id="configGuildIcon"
+                    class="guild-icon-large"
+                    src=""
+                    alt=""
+                  />
+                  <div>
+                    <h2 id="configGuildName">Szerver neve</h2>
+                    <p class="guild-id-display">
+                      ID: <span id="configGuildId"></span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-content">
+                <div class="form-section">
+                  <label for="testMessage">Teszt Üzenet</label>
+                  <textarea
+                    id="testMessage"
+                    placeholder="Írd be az üzenetet amit a bot küldeni fog..."
+                    rows="8"
+                  ></textarea>
+                  <p class="field-description">
+                    Ez az üzenet jelenik meg amikor a bot tesztelést végez
+                  </p>
+                </div>
+
+                <div class="button-group">
+                  <button class="btn btn-primary" onclick="saveConfig()">
+                    <i class="fas fa-save"></i>
+                    Mentés
+                  </button>
+                  <button class="btn btn-secondary" onclick="loadConfig()">
+                    <i class="fas fa-sync-alt"></i>
+                    Újratöltés
+                  </button>
+                </div>
+
+                <div id="configStatus" class="status"></div>
+              </div>
+            </div>
+            <!-- AutoMod rész -->
+            <div id="autoModSection">
+              <div class="section-header">
+                <h2>🛡️ Auto-Moderáció</h2>
+                <p>
+                  Automatikus moderációs szabályok beállítása a szerveredhez
+                </p>
+              </div>
+
+              <div class="settings-container">
+                <!-- Spam & Caps Szűrés -->
+                <div class="setting-group">
+                  <div class="setting-title">
+                    <span class="icon">⚡</span>
+                    <span>Spam & Caps Szűrés</span>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="title">Spam Védelem</span>
+                      <span class="description"
+                        >Azonos üzenetek ismétlésének megakadályozása</span
+                      >
                     </div>
-                </div>
-                
-                <div class="sidebar-section">
-                    <h3 class="sidebar-title">Szerverek</h3>
-                    <div id="guildsList" class="guilds-list">
-                        <div class="loading-spinner"></div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="spamProtection" />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="title">Max. Üzenet / 5 másodperc</span>
+                      <span class="description"
+                        >Hány üzenetet küldhet egy felhasználó 5 másodperc
+                        alatt</span
+                      >
                     </div>
-                </div>
-            </aside>
+                    <input
+                      type="number"
+                      class="number-input"
+                      id="maxMessages"
+                      min="1"
+                      max="20"
+                      value="5"
+                    />
+                  </div>
 
-            <section class="config-panel">
-                <div id="noGuildSelected" class="no-selection">
-                    <i class="fas fa-layer-group" style="font-size: 64px;"></i>
-                    <h2>Válassz szervert</h2>
-                    <p>Válaszd ki a konfigurálni kívánt szervert a bal oldali listából</p>
-                </div>
-
-                <div id="configSection" class="section-content" style="display: none;">
-                    <div class="config-form">
-                        <div class="config-header">
-                            <div class="guild-info-header">
-                                <img id="configGuildIcon" class="guild-icon-large" src="" alt="">
-                                <div>
-                                    <h2 id="configGuildName">Szerver neve</h2>
-                                    <p class="guild-id-display">ID: <span id="configGuildId"></span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="config-content">
-                            <div class="form-section">
-                                <label for="testMessage">Teszt Üzenet</label>
-                                <textarea 
-                                    id="testMessage" 
-                                    placeholder="Írd be az üzenetet amit a bot küldeni fog..."
-                                    rows="8"
-                                ></textarea>
-                                <p class="field-description">Ez az üzenet jelenik meg amikor a bot tesztelést végez</p>
-                            </div>
-
-                            <div class="button-group">
-                                <button class="btn btn-primary" onclick="saveConfig()">
-                                    <i class="fas fa-save"></i>
-                                    Mentés
-                                </button>
-                                <button class="btn btn-secondary" onclick="loadConfig()">
-                                    <i class="fas fa-sync-alt"></i>
-                                    Újratöltés
-                                </button>
-                            </div>
-
-                            <div id="configStatus" class="status"></div>
-                        </div>
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="title">Caps Lock Limit (%)</span>
+                      <span class="description"
+                        >Maximum nagybetűs karakterek százaléka egy
+                        üzenetben</span
+                      >
                     </div>
-                </div>
+                    <input
+                      type="number"
+                      class="number-input"
+                      id="capsLimit"
+                      min="0"
+                      max="100"
+                      value="70"
+                    />
+                  </div>
 
-                <!-- Embed Section -->
-                <div id="embedSection" class="section-content" style="display: none;">
-                    <div class="embed-builder">
-                        <div class="embed-header">
-                            <div class="guild-info-header">
-                                <img id="embedGuildIcon" class="guild-icon-large" src="" alt="">
-                                <div>
-                                    <h2 id="embedGuildName">Szerver neve</h2>
-                                    <p class="guild-id-display">ID: <span id="embedGuildId"></span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="embed-container">
-                            <div class="embed-editor">
-                                <div class="editor-section">
-                                    <h3 class="section-title">
-                                        <i class="fas fa-hashtag"></i>
-                                        Csatorna kiválasztása
-                                    </h3>
-                                    <div class="form-group">
-                                        <select id="channelSelect" class="channel-select">
-                                            <option value="">Csatorna betöltése...</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="editor-section">
-                                    <h3 class="section-title">
-                                        <i class="fas fa-user"></i>
-                                        Szerző
-                                    </h3>
-                                    <div class="form-group">
-                                        <label>Szerző neve</label>
-                                        <input type="text" id="authorName" placeholder="Szerző neve" maxlength="256">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Szerző URL</label>
-                                        <input type="url" id="authorUrl" placeholder="https://example.com">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Szerző ikon URL</label>
-                                        <input type="url" id="authorIcon" placeholder="https://i.imgur.com/icon.png">
-                                    </div>
-                                </div>
-
-                                <div class="editor-section">
-                                    <h3 class="section-title">
-                                        <i class="fas fa-heading"></i>
-                                        Tartalom
-                                    </h3>
-                                    <div class="form-group">
-                                        <label>Cím</label>
-                                        <input type="text" id="embedTitle" placeholder="Embed címe" maxlength="256">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>URL</label>
-                                        <input type="url" id="embedUrl" placeholder="https://example.com">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Leírás</label>
-                                        <textarea id="embedDescription" placeholder="Embed leírása..." rows="6" maxlength="4096"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Szín</label>
-                                        <div class="color-input-group">
-                                            <input type="color" id="embedColor" value="#5865F2">
-                                            <input type="text" id="embedColorHex" value="#5865F2" placeholder="#5865F2">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="editor-section">
-                                    <h3 class="section-title">
-                                        <i class="fas fa-image"></i>
-                                        Képek
-                                    </h3>
-                                    <div class="form-group">
-                                        <label>Kép URL (nagy kép)</label>
-                                        <input type="url" id="embedImage" placeholder="https://i.imgur.com/image.png">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Thumbnail URL (kis kép)</label>
-                                        <input type="url" id="embedThumbnail" placeholder="https://i.imgur.com/thumb.png">
-                                    </div>
-                                </div>
-
-                                <div class="editor-section">
-                                    <h3 class="section-title">
-                                        <i class="fas fa-shoe-prints"></i>
-                                        Lábléc
-                                    </h3>
-                                    <div class="form-group">
-                                        <label>Lábléc szövege</label>
-                                        <input type="text" id="footerText" placeholder="Lábléc szövege" maxlength="2048">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Lábléc ikon URL</label>
-                                        <input type="url" id="footerIcon" placeholder="https://i.imgur.com/icon.png">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>
-                                            <input type="checkbox" id="embedTimestamp">
-                                            Időbélyeg hozzáadása
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="editor-section">
-                                    <h3 class="section-title">
-                                        <i class="fas fa-list"></i>
-                                        Mezők
-                                    </h3>
-                                    <div id="fieldsContainer"></div>
-                                    <button class="btn btn-secondary" onclick="addField()">
-                                        <i class="fas fa-plus"></i>
-                                        Mező hozzáadása
-                                    </button>
-                                </div>
-
-                                <div class="button-group">
-                                    <button class="btn btn-primary" onclick="sendEmbed()">
-                                        <i class="fas fa-paper-plane"></i>
-                                        Embed Küldése
-                                    </button>
-                                    <button class="btn btn-secondary" onclick="clearEmbed()">
-                                        <i class="fas fa-trash"></i>
-                                        Törlés
-                                    </button>
-                                </div>
-
-                                <div id="embedStatus" class="status"></div>
-                            </div>
-
-                            <div class="embed-preview">
-                                <h3 class="preview-title">
-                                    <i class="fas fa-eye"></i>
-                                    Előnézet
-                                </h3>
-                                <div class="discord-preview">
-                                    <div class="discord-message">
-                                        <div class="discord-avatar">
-                                            <img src="static/images/vermion-logo.png" alt="Bot">
-                                        </div>
-                                        <div class="discord-content">
-                                            <div class="discord-header">
-                                                <span class="discord-username">Vermion</span>
-                                                <span class="discord-bot-badge">BOT</span>
-                                                <span class="discord-timestamp">Ma 12:00</span>
-                                            </div>
-                                            <div id="embedPreview" class="discord-embed">
-                                                <div class="discord-embed-empty">
-                                                    <i class="fas fa-info-circle"></i>
-                                                    <p>Töltsd ki a mezőket az embed megjelenítéséhez</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="title">Emoji Spam Védelem</span>
+                      <span class="description"
+                        >Túl sok emoji használatának korlátozása</span
+                      >
                     </div>
-                </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="emojiSpam" />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
 
-                <!-- Dropdown Section -->
-                <div id="listSection" class="section-content" style="display: none;">
-                    <div class="dropdown-builder">
-                        <div class="dropdown-header">
-                            <div class="guild-info-header">
-                                <img id="dropdownGuildIcon" class="guild-icon-large" src="" alt="">
-                                <div>
-                                    <h2 id="dropdownGuildName">Szerver neve</h2>
-                                    <p class="guild-id-display">ID: <span id="dropdownGuildId"></span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="dropdown-container">
-                            <div class="dropdown-editor">
-                                <div class="editor-section">
-                                    <h3 class="section-title">
-                                        <i class="fas fa-hashtag"></i>
-                                        Csatorna kiválasztása
-                                    </h3>
-                                    <div class="form-group">
-                                        <select id="dropdownChannelSelect" class="channel-select">
-                                            <option value="">Csatorna betöltése...</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="editor-section">
-                                    <h3 class="section-title">
-                                        <i class="fas fa-cog"></i>
-                                        Alapbeállítások
-                                    </h3>
-                                    <div class="form-group">
-                                        <label>Üzenet (opcionális)</label>
-                                        <textarea id="dropdownMessage" placeholder="Ide írd az üzenetet ami a dropdown felett jelenik meg..." rows="3" maxlength="2000"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Custom ID</label>
-                                        <input type="text" id="dropdownCustomId" placeholder="dropdown_custom_id" maxlength="100">
-                                        <p class="field-description">Ez az azonosító a bot számára jelzi, hogy melyik dropdown-ról van szó</p>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Placeholder szöveg</label>
-                                        <input type="text" id="dropdownPlaceholder" placeholder="Válassz egy opciót..." maxlength="150">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Minimum kiválasztható opciók száma</label>
-                                        <input type="number" id="dropdownMinValues" value="1" min="1" max="25">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Maximum kiválasztható opciók száma</label>
-                                        <input type="number" id="dropdownMaxValues" value="1" min="1" max="25">
-                                    </div>
-                                </div>
-
-                                <div class="editor-section">
-                                    <h3 class="section-title">
-                                        <i class="fas fa-list"></i>
-                                        Opciók
-                                    </h3>
-                                    <div id="dropdownOptionsContainer"></div>
-                                    <button class="btn btn-secondary" onclick="addDropdownOption()">
-                                        <i class="fas fa-plus"></i>
-                                        Opció hozzáadása
-                                    </button>
-                                </div>
-
-                                <div class="button-group">
-                                    <button class="btn btn-primary" onclick="sendDropdown()">
-                                        <i class="fas fa-paper-plane"></i>
-                                        Dropdown Küldése
-                                    </button>
-                                    <button class="btn btn-secondary" onclick="clearDropdown()">
-                                        <i class="fas fa-trash"></i>
-                                        Törlés
-                                    </button>
-                                </div>
-
-                                <div id="dropdownStatus" class="status"></div>
-                            </div>
-
-                            <div class="dropdown-preview">
-                                <h3 class="preview-title">
-                                    <i class="fas fa-eye"></i>
-                                    Előnézet
-                                </h3>
-                                <div class="discord-preview">
-                                    <div class="discord-message">
-                                        <div class="discord-avatar">
-                                            <img src="static/images/vermion-logo.png" alt="Bot">
-                                        </div>
-                                        <div class="discord-content">
-                                            <div class="discord-header">
-                                                <span class="discord-username">Vermion</span>
-                                                <span class="discord-bot-badge">BOT</span>
-                                                <span class="discord-timestamp">Ma 12:00</span>
-                                            </div>
-                                            <div id="dropdownMessagePreview" class="discord-message-text"></div>
-                                            <div id="dropdownPreview" class="discord-dropdown">
-                                                <div class="dropdown-empty">
-                                                    <i class="fas fa-info-circle"></i>
-                                                    <p>Adj hozzá opciókat a dropdown megjelenítéséhez</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="title">Max. Emoji / Üzenet</span>
+                      <span class="description"
+                        >Maximum engedélyezett emoji egy üzenetben</span
+                      >
                     </div>
+                    <input
+                      type="number"
+                      class="number-input"
+                      id="maxEmojis"
+                      min="1"
+                      max="50"
+                      value="10"
+                    />
+                  </div>
                 </div>
-            </section>
-        </main>
+
+                <!-- Tiltott Szavak -->
+                <div class="setting-group">
+                  <div class="setting-title">
+                    <span class="icon">🚫</span>
+                    <span>Tiltott Szavak Listája</span>
+                  </div>
+
+                  <div
+                    class="setting-item"
+                    style="flex-direction: column; align-items: stretch"
+                  >
+                    <div class="setting-label" style="margin-bottom: 15px">
+                      <span class="title">Szűrés Aktív</span>
+                      <span class="description"
+                        >Automatikusan törli a tiltott szavakat tartalmazó
+                        üzeneteket</span
+                      >
+                    </div>
+                    <label
+                      class="toggle-switch"
+                      style="align-self: flex-end; margin-bottom: 15px"
+                    >
+                      <input type="checkbox" id="badWordFilter" />
+                      <span class="slider"></span>
+                    </label>
+
+                    <div class="word-list-container">
+                      <div class="word-input-group">
+                        <input
+                          type="text"
+                          class="word-input"
+                          id="newBadWord"
+                          placeholder="Adj hozzá tiltott szót..."
+                        />
+                        <button class="add-word-btn" onclick="addBadWord()">
+                          + Hozzáad
+                        </button>
+                      </div>
+                      <div class="words-display" id="badWordsList">
+                        <span class="empty-state"
+                          >Még nincsenek tiltott szavak hozzáadva</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Figyelmeztetési Rendszer -->
+                <div class="setting-group">
+                  <div class="setting-title">
+                    <span class="icon">⚠️</span>
+                    <span>Figyelmeztetési Rendszer</span>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="title">Automatikus Büntetés</span>
+                      <span class="description"
+                        >Automatikus intézkedés bizonyos számú figyelmeztetés
+                        után</span
+                      >
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="autoWarnPunish" />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+
+                  <div
+                    class="setting-item"
+                    style="flex-direction: column; align-items: stretch"
+                  >
+                    <div class="setting-label" style="margin-bottom: 15px">
+                      <span class="title">Büntetési Szintek</span>
+                      <span class="description"
+                        >Állítsd be, hogy hány warning után mi történjen</span
+                      >
+                    </div>
+                    <div class="warning-system">
+                      <div class="warning-option">
+                        <label>Timeout után:</label>
+                        <input
+                          type="number"
+                          class="number-input"
+                          id="warnTimeout"
+                          min="1"
+                          max="20"
+                          value="3"
+                        />
+                      </div>
+                      <div class="warning-option">
+                        <label>Kick után:</label>
+                        <input
+                          type="number"
+                          class="number-input"
+                          id="warnKick"
+                          min="1"
+                          max="20"
+                          value="5"
+                        />
+                      </div>
+                      <div class="warning-option">
+                        <label>Ban után:</label>
+                        <input
+                          type="number"
+                          class="number-input"
+                          id="warnBan"
+                          min="1"
+                          max="20"
+                          value="7"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="setting-item">
+                    <div class="setting-label">
+                      <span class="title">Warning Lejárat (napok)</span>
+                      <span class="description"
+                        >Automatikus törlés X nap után (0 = soha)</span
+                      >
+                    </div>
+                    <input
+                      type="number"
+                      class="number-input"
+                      id="warnExpiry"
+                      min="0"
+                      max="365"
+                      value="30"
+                    />
+                  </div>
+                </div>
+
+                <button class="save-btn" onclick="saveSettings()">
+                  💾 Beállítások Mentése
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Embed Section -->
+          <div id="embedSection" class="section-content" style="display: none">
+            <div class="embed-builder">
+              <div class="embed-header">
+                <div class="guild-info-header">
+                  <img
+                    id="embedGuildIcon"
+                    class="guild-icon-large"
+                    src=""
+                    alt=""
+                  />
+                  <div>
+                    <h2 id="embedGuildName">Szerver neve</h2>
+                    <p class="guild-id-display">
+                      ID: <span id="embedGuildId"></span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="embed-container">
+                <div class="embed-editor">
+                  <div class="editor-section">
+                    <h3 class="section-title">
+                      <i class="fas fa-hashtag"></i>
+                      Csatorna kiválasztása
+                    </h3>
+                    <div class="form-group">
+                      <select id="channelSelect" class="channel-select">
+                        <option value="">Csatorna betöltése...</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="editor-section">
+                    <h3 class="section-title">
+                      <i class="fas fa-user"></i>
+                      Szerző
+                    </h3>
+                    <div class="form-group">
+                      <label>Szerző neve</label>
+                      <input
+                        type="text"
+                        id="authorName"
+                        placeholder="Szerző neve"
+                        maxlength="256"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Szerző URL</label>
+                      <input
+                        type="url"
+                        id="authorUrl"
+                        placeholder="https://example.com"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Szerző ikon URL</label>
+                      <input
+                        type="url"
+                        id="authorIcon"
+                        placeholder="https://i.imgur.com/icon.png"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="editor-section">
+                    <h3 class="section-title">
+                      <i class="fas fa-heading"></i>
+                      Tartalom
+                    </h3>
+                    <div class="form-group">
+                      <label>Cím</label>
+                      <input
+                        type="text"
+                        id="embedTitle"
+                        placeholder="Embed címe"
+                        maxlength="256"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>URL</label>
+                      <input
+                        type="url"
+                        id="embedUrl"
+                        placeholder="https://example.com"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Leírás</label>
+                      <textarea
+                        id="embedDescription"
+                        placeholder="Embed leírása..."
+                        rows="6"
+                        maxlength="4096"
+                      ></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>Szín</label>
+                      <div class="color-input-group">
+                        <input type="color" id="embedColor" value="#5865F2" />
+                        <input
+                          type="text"
+                          id="embedColorHex"
+                          value="#5865F2"
+                          placeholder="#5865F2"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="editor-section">
+                    <h3 class="section-title">
+                      <i class="fas fa-image"></i>
+                      Képek
+                    </h3>
+                    <div class="form-group">
+                      <label>Kép URL (nagy kép)</label>
+                      <input
+                        type="url"
+                        id="embedImage"
+                        placeholder="https://i.imgur.com/image.png"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Thumbnail URL (kis kép)</label>
+                      <input
+                        type="url"
+                        id="embedThumbnail"
+                        placeholder="https://i.imgur.com/thumb.png"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="editor-section">
+                    <h3 class="section-title">
+                      <i class="fas fa-shoe-prints"></i>
+                      Lábléc
+                    </h3>
+                    <div class="form-group">
+                      <label>Lábléc szövege</label>
+                      <input
+                        type="text"
+                        id="footerText"
+                        placeholder="Lábléc szövege"
+                        maxlength="2048"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Lábléc ikon URL</label>
+                      <input
+                        type="url"
+                        id="footerIcon"
+                        placeholder="https://i.imgur.com/icon.png"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>
+                        <input type="checkbox" id="embedTimestamp" />
+                        Időbélyeg hozzáadása
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="editor-section">
+                    <h3 class="section-title">
+                      <i class="fas fa-list"></i>
+                      Mezők
+                    </h3>
+                    <div id="fieldsContainer"></div>
+                    <button class="btn btn-secondary" onclick="addField()">
+                      <i class="fas fa-plus"></i>
+                      Mező hozzáadása
+                    </button>
+                  </div>
+
+                  <div class="button-group">
+                    <button class="btn btn-primary" onclick="sendEmbed()">
+                      <i class="fas fa-paper-plane"></i>
+                      Embed Küldése
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearEmbed()">
+                      <i class="fas fa-trash"></i>
+                      Törlés
+                    </button>
+                  </div>
+
+                  <div id="embedStatus" class="status"></div>
+                </div>
+
+                <div class="embed-preview">
+                  <h3 class="preview-title">
+                    <i class="fas fa-eye"></i>
+                    Előnézet
+                  </h3>
+                  <div class="discord-preview">
+                    <div class="discord-message">
+                      <div class="discord-avatar">
+                        <img src="static/images/vermion-logo.png" alt="Bot" />
+                      </div>
+                      <div class="discord-content">
+                        <div class="discord-header">
+                          <span class="discord-username">Vermion</span>
+                          <span class="discord-bot-badge">BOT</span>
+                          <span class="discord-timestamp">Ma 12:00</span>
+                        </div>
+                        <div id="embedPreview" class="discord-embed">
+                          <div class="discord-embed-empty">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Töltsd ki a mezőket az embed megjelenítéséhez</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dropdown Section -->
+          <div id="listSection" class="section-content" style="display: none">
+            <div class="dropdown-builder">
+              <div class="dropdown-header">
+                <div class="guild-info-header">
+                  <img
+                    id="dropdownGuildIcon"
+                    class="guild-icon-large"
+                    src=""
+                    alt=""
+                  />
+                  <div>
+                    <h2 id="dropdownGuildName">Szerver neve</h2>
+                    <p class="guild-id-display">
+                      ID: <span id="dropdownGuildId"></span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dropdown-container">
+                <div class="dropdown-editor">
+                  <div class="editor-section">
+                    <h3 class="section-title">
+                      <i class="fas fa-hashtag"></i>
+                      Csatorna kiválasztása
+                    </h3>
+                    <div class="form-group">
+                      <select id="dropdownChannelSelect" class="channel-select">
+                        <option value="">Csatorna betöltése...</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="editor-section">
+                    <h3 class="section-title">
+                      <i class="fas fa-cog"></i>
+                      Alapbeállítások
+                    </h3>
+                    <div class="form-group">
+                      <label>Üzenet (opcionális)</label>
+                      <textarea
+                        id="dropdownMessage"
+                        placeholder="Ide írd az üzenetet ami a dropdown felett jelenik meg..."
+                        rows="3"
+                        maxlength="2000"
+                      ></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>Custom ID</label>
+                      <input
+                        type="text"
+                        id="dropdownCustomId"
+                        placeholder="dropdown_custom_id"
+                        maxlength="100"
+                      />
+                      <p class="field-description">
+                        Ez az azonosító a bot számára jelzi, hogy melyik
+                        dropdown-ról van szó
+                      </p>
+                    </div>
+                    <div class="form-group">
+                      <label>Placeholder szöveg</label>
+                      <input
+                        type="text"
+                        id="dropdownPlaceholder"
+                        placeholder="Válassz egy opciót..."
+                        maxlength="150"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Minimum kiválasztható opciók száma</label>
+                      <input
+                        type="number"
+                        id="dropdownMinValues"
+                        value="1"
+                        min="1"
+                        max="25"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Maximum kiválasztható opciók száma</label>
+                      <input
+                        type="number"
+                        id="dropdownMaxValues"
+                        value="1"
+                        min="1"
+                        max="25"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="editor-section">
+                    <h3 class="section-title">
+                      <i class="fas fa-list"></i>
+                      Opciók
+                    </h3>
+                    <div id="dropdownOptionsContainer"></div>
+                    <button
+                      class="btn btn-secondary"
+                      onclick="addDropdownOption()"
+                    >
+                      <i class="fas fa-plus"></i>
+                      Opció hozzáadása
+                    </button>
+                  </div>
+
+                  <div class="button-group">
+                    <button class="btn btn-primary" onclick="sendDropdown()">
+                      <i class="fas fa-paper-plane"></i>
+                      Dropdown Küldése
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearDropdown()">
+                      <i class="fas fa-trash"></i>
+                      Törlés
+                    </button>
+                  </div>
+
+                  <div id="dropdownStatus" class="status"></div>
+                </div>
+
+                <div class="dropdown-preview">
+                  <h3 class="preview-title">
+                    <i class="fas fa-eye"></i>
+                    Előnézet
+                  </h3>
+                  <div class="discord-preview">
+                    <div class="discord-message">
+                      <div class="discord-avatar">
+                        <img src="static/images/vermion-logo.png" alt="Bot" />
+                      </div>
+                      <div class="discord-content">
+                        <div class="discord-header">
+                          <span class="discord-username">Vermion</span>
+                          <span class="discord-bot-badge">BOT</span>
+                          <span class="discord-timestamp">Ma 12:00</span>
+                        </div>
+                        <div
+                          id="dropdownMessagePreview"
+                          class="discord-message-text"
+                        ></div>
+                        <div id="dropdownPreview" class="discord-dropdown">
+                          <div class="dropdown-empty">
+                            <i class="fas fa-info-circle"></i>
+                            <p>
+                              Adj hozzá opciókat a dropdown megjelenítéséhez
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
 
     <script src="/static/js/utils.js"></script>
-    
+
     <!-- 2. Independent modules -->
     <script src="/static/js/navigation.js"></script>
     <script src="/static/js/auth.js"></script>
-    
+
     <!-- 3. Modules that depend on utils -->
     <script src="/static/js/guilds.js"></script>
     <script src="/static/js/config.js"></script>
@@ -388,8 +738,11 @@
     <script src="/static/js/embed-fields.js"></script>
     <script src="/static/js/embed.js"></script>
     <script src="/static/js/dropdown.js"></script>
-    
-    <!-- 4. Main initialization (depends on everything) -->
+
+    <!-- 4. Auto Moderation  -->
+     <script src="/static/js/automod.js"></script>
+
+    <!-- 5. Main initialization (depends on everything) -->
     <script src="/static/js/main.js"></script>
-</body>
+  </body>
 </html>
